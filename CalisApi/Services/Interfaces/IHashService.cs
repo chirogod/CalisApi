@@ -1,4 +1,5 @@
 ﻿using CalisApi.Models;
+using CalisApi.Models.DTOs;
 
 namespace CalisApi.Services.Interfaces
 {
