@@ -8,7 +8,6 @@ namespace CalisApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -17,6 +16,22 @@ namespace CalisApi.Controllers
             _authService = authService;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto user)
+        {
+            try
+            {
+                var token = await _authService.Login(user);
+                return Ok(token);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex) { 
+                return StatusCode(500, new {message = "Error interno",  details = ex.Message});
+            }
+        }
 
 
         [HttpPost("register")]
@@ -37,5 +52,7 @@ namespace CalisApi.Controllers
             }
             
         }
+
+
     }
 }

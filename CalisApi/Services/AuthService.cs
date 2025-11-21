@@ -35,5 +35,20 @@ namespace CalisApi.Services
             var token = _tokenService.GenerateJwtToken(newUser);
             return token;
         }
+
+        public async Task<string> Login(LoginDto user)
+        {
+            var exist = await _userRepository.GetByEmail(user.Email);
+            if (exist == null) {
+                throw new InvalidOperationException("El email no esta registrado.");
+            }
+            var pass = _hashService.Verify(exist, exist.Password, user.Password);
+            if (!pass)
+            {
+                throw new InvalidOperationException("Contrasena incorrecta");
+            }
+            var token = _tokenService.GenerateJwtToken(exist);
+            return token;
+        }
     }
 }

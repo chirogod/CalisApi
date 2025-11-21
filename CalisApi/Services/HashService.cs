@@ -18,7 +18,16 @@ namespace CalisApi.Services
         }
         public bool Verify(User user, string hashedPass, string inputPass)
         {
-            return true;
+            var pass = _passwordHasher.VerifyHashedPassword(user, hashedPass, inputPass);
+            if(pass == PasswordVerificationResult.Success)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
     }
 }
