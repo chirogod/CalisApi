@@ -1,12 +1,12 @@
 ﻿namespace CalisApi.Models
 {
-    public class UserClass
+    public class UserSession
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int ClassId { get; set; }
+        public int SessionId { get; set; }
 
-        public Session Class { get; set; }
+        public Session Session { get; set; }
         public User User { get; set; }
 
     }

@@ -10,6 +10,15 @@ namespace CalisApi.Database.Repositories
         {
             _context = context;
         }
+        public async Task<User> GetById(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
+        }
 
         public async Task<User> GetByEmail(string email)
         {

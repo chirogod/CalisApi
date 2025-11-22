@@ -51,6 +51,8 @@ builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
