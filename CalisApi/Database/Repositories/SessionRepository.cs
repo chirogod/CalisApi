@@ -11,6 +11,11 @@ namespace CalisApi.Database.Repositories
         {
             _context = context;
         }
+
+        public async Task<IEnumerable<Session>> GetAll()
+        {
+            return await _context.Sessions.ToListAsync();
+        }
         public async Task<Session> GetSessionById(int id)
         {
             var ses = await _context.Sessions.FindAsync(id);
@@ -31,6 +36,16 @@ namespace CalisApi.Database.Repositories
         {
             _context.Add(session);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Session> GetByDate(DateTime date)
+        {
+            var e = await _context.Sessions.FirstOrDefaultAsync(x => x.Date == date);
+            if(e == null)
+            {
+                return null;
+            }
+            return e;
         }
 
         public async Task Enroll(UserSession userSession)
