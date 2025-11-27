@@ -1,5 +1,6 @@
 ﻿using CalisApi.Database.Interfaces;
 using CalisApi.Models;
+using CalisApi.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalisApi.Database.Repositories
@@ -69,5 +70,18 @@ namespace CalisApi.Database.Repositories
             }
             
         }
+
+        public async Task<List<SessionUserDataDto>> GetEnrolledUsers(int id)
+        {
+            return await _context.UserSessions
+                        .Where(us => us.SessionId == id)
+                        .Include(us => us.User)
+                        .Select(us => new SessionUserDataDto
+                        {
+                            Id = us.User.Id,
+                            FullName = us.User.FullName
+                        })
+                        .ToListAsync();
+                        }
     }
 }

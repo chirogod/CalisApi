@@ -10,7 +10,6 @@ namespace CalisApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class SessionController : ControllerBase
     {
         private readonly ISessionRepository _sessionRepository;
@@ -41,6 +40,25 @@ namespace CalisApi.Controllers
                 return Ok(all);
             }
             
+        }
+
+        [HttpGet("{id:int?}/Users")]
+        public async Task<IActionResult> GetSessionUsers(int id) {
+            var exist = await _sessionRepository.GetSessionById(id);
+            if(exist == null)
+            {
+                return NotFound("La sesion no existe");
+            }
+
+            try
+            {
+                var usuarios = await _sessionRepository.GetEnrolledUsers(id);
+                return Ok(usuarios);
+            }catch(Exception e)
+            {
+                return StatusCode(500, "Error interno: " + e.Message);
+            }
+
         }
 
 
