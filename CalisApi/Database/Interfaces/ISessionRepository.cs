@@ -11,7 +11,6 @@ namespace CalisApi.Database.Interfaces
         Task<Session> GetByDate(DateTime date);
         Task Create(Session session);
         Task Enroll(UserSession userSession);
-
         Task<List<SessionUserDataDto>> GetEnrolledUsers(int id);
     }
 }

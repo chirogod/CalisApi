@@ -1,4 +1,6 @@
-﻿using CalisApi.Models.DTOs;
+﻿using CalisApi.Database.Interfaces;
+using CalisApi.Models;
+using CalisApi.Models.DTOs;
 using CalisApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +13,32 @@ namespace CalisApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public UserController(IAuthService authService)
+        private readonly IUserRepository _userRepository;
+        public UserController(IAuthService authService, IUserRepository userRepositorry)
         {
             _authService = authService;
+            _userRepository = userRepositorry;
+        }
+
+        [HttpGet("{id:int?}")]
+        public async Task<IActionResult> GetUsuario(int? id)
+        {
+            if (id.HasValue)
+            {
+                User u = await _userRepository.GetUsuarioById(id.Value);
+                if (u == null)
+                {
+                    return NotFound("No existe este usuario");
+                }
+                return Ok(u);
+            }
+            else
+            {
+                var all = await _userRepository.GetAllUsuarios();
+                return Ok(all);
+            }
+            
+            
         }
 
         [HttpPost("login")]

@@ -1,5 +1,6 @@
 ﻿using CalisApi.Database.Interfaces;
 using CalisApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalisApi.Database.Repositories
 {
@@ -19,6 +20,16 @@ namespace CalisApi.Database.Repositories
             }
             return user;
         }
+        public async Task<User> GetUsuarioById(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p=>p.Id == id && p.Role == "Usuario");
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
+        }
+
 
         public async Task<User> GetByEmail(string email)
         {
@@ -27,6 +38,15 @@ namespace CalisApi.Database.Repositories
                 return null;
             }
             return user;
+        }
+
+        public async Task<IEnumerable<User>> GetAll()
+        {
+            return await _context.Users.ToListAsync();
+        }
+        public async Task<IEnumerable<User>> GetAllUsuarios()
+        {
+            return await _context.Users.Where(p=>p.Role == "Usuario").ToListAsync();
         }
 
         public async Task Add(User user)
