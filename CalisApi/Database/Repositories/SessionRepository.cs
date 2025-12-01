@@ -82,6 +82,32 @@ namespace CalisApi.Database.Repositories
                             FullName = us.User.FullName
                         })
                         .ToListAsync();
-                        }
+        }
+
+        public async Task UnEnroll(UserSession userSession)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var sessionId = userSession.SessionId;
+                var userSessionToDelete = await _context.UserSessions.FirstOrDefaultAsync(s => s.UserId == userSession.UserId && s.SessionId == userSession.SessionId );
+                if(userSessionToDelete == null)
+                {
+                    throw new InvalidOperationException("La inscripción no existe para ser eliminada.");
+                }
+                var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
+                _context.UserSessions.Remove(userSessionToDelete);
+                session.Enrolled -= 1;
+                _context.Sessions.Update(session);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+        }
     }
 }

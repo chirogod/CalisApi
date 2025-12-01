@@ -12,5 +12,6 @@ namespace CalisApi.Database.Interfaces
         Task Create(Session session);
         Task Enroll(UserSession userSession);
         Task<List<SessionUserDataDto>> GetEnrolledUsers(int id);
+        Task UnEnroll(UserSession userSession);
     }
 }

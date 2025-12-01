@@ -116,7 +116,7 @@ namespace CalisApi.Controllers
             }
             var sesExist = await _sessionRepository.GetSessionById(userSessionDto.SessionId);
             var userExist = await _userRepository.GetById(userIdFromToken);
-            var userEnroll = await _sessionRepository.VerifyEnroll(userSessionDto.UserId, userSessionDto.SessionId);
+            var userEnroll = await _sessionRepository.VerifyEnroll(userIdFromToken, userSessionDto.SessionId);
             
             if (sesExist == null) 
             {
@@ -155,6 +155,50 @@ namespace CalisApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error interno al inscribir: {ex.Message}");
             }
             
+        }
+
+        [HttpDelete("Unenroll")]
+        public async Task<IActionResult> UnEnroll([FromBody] UserSessionDto userSessionDto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            if (!int.TryParse(userIdClaim.Value, out int userIdFromToken))
+            {
+                return BadRequest("El formato del ID de usuario en el token es inválido.");
+            }
+            var sesExist = await _sessionRepository.GetSessionById(userSessionDto.SessionId);
+            var userExist = await _userRepository.GetById(userIdFromToken);
+            var userEnroll = await _sessionRepository.VerifyEnroll(userIdFromToken, userSessionDto.SessionId);
+
+            if (sesExist == null)
+            {
+                return NotFound("Clase no encontrada");
+            }
+            if (!userEnroll)
+            {
+                return BadRequest("Usuario no esta registrado en esta clase");
+            }
+            var userSession = new UserSession
+            {
+                UserId = userIdFromToken,
+                SessionId = userSessionDto.SessionId,
+            };
+            try
+            {
+                await _sessionRepository.UnEnroll(userSession);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error interno al inscribir: {ex.Message}");
+            }
         }
     }
 }
