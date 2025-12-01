@@ -157,8 +157,8 @@ namespace CalisApi.Controllers
             
         }
 
-        [HttpDelete("Unenroll")]
-        public async Task<IActionResult> UnEnroll([FromBody] UserSessionDto userSessionDto)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> UnEnroll(int id)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -169,25 +169,19 @@ namespace CalisApi.Controllers
             {
                 return BadRequest("El formato del ID de usuario en el token es inválido.");
             }
-            var sesExist = await _sessionRepository.GetSessionById(userSessionDto.SessionId);
-            var userExist = await _userRepository.GetById(userIdFromToken);
-            var userEnroll = await _sessionRepository.VerifyEnroll(userIdFromToken, userSessionDto.SessionId);
+            var isEnrolled = await _sessionRepository.VerifyEnroll(userIdFromToken, id);
 
-            if (sesExist == null)
+            if (!isEnrolled)
             {
-                return NotFound("Clase no encontrada");
+                return BadRequest("No estás inscrito en esta clase.");
             }
-            if (!userEnroll)
-            {
-                return BadRequest("Usuario no esta registrado en esta clase");
-            }
-            var userSession = new UserSession
-            {
-                UserId = userIdFromToken,
-                SessionId = userSessionDto.SessionId,
-            };
             try
             {
+                var userSession = new UserSession
+                {
+                    UserId = userIdFromToken,
+                    SessionId = id,
+                };
                 await _sessionRepository.UnEnroll(userSession);
                 return NoContent();
             }
