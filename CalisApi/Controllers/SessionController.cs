@@ -42,6 +42,24 @@ namespace CalisApi.Controllers
             
         }
 
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetFullSessionDetails(int id)
+        {
+            var session =  await _sessionRepository.GetSessionById(id);
+            if (session == null)
+            {
+                return NotFound("La sesión no existe.");
+            }
+            var enrolledUsers = await _sessionRepository.GetEnrolledUsers(id);
+            var result = new
+            {
+                Session = session,
+                EnrolledUsers = enrolledUsers
+            };
+            return Ok(result);
+
+        }
+
         [HttpGet("{id:int?}/Users")]
         public async Task<IActionResult> GetSessionUsers(int id) {
             var exist = await _sessionRepository.GetSessionById(id);
