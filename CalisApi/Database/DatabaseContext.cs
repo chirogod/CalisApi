@@ -14,6 +14,7 @@ namespace CalisApi.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
-
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Video> Videos { get; set; }
     }
 }

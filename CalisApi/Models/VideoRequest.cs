@@ -1,12 +1,10 @@
 ﻿namespace CalisApi.Models
 {
-    public class Video
+    public class VideoRequest
     {
-        public int Id { get; set; }
+        public IFormFile? File { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Url { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
     }
 }
