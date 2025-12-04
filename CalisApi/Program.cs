@@ -1,4 +1,6 @@
 using Amazon.S3;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
 using CalisApi.Database;
 using CalisApi.Database.Interfaces;
 using CalisApi.Database.Repositories;
@@ -14,6 +16,18 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+if(builder.Environment.IsProduction())
+{
+    var keyVaultName = builder.Configuration["KeyVaultName"];
+    var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+
+    builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential(),
+        new AzureKeyVaultConfigurationOptions
+        {
+            ReloadInterval = TimeSpan.FromMinutes(5)
+        });
+}
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -59,12 +73,16 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 
-var awsRegion = builder.Configuration["AWS:Region"];
-var awsAccessKey = builder.Configuration["AWS:AccessKey"];
-var awsSecretKey = builder.Configuration["AWS:SecretKey"];
+
 
 builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
+    var configuration = sp.GetRequiredService<IConfiguration>();
+
+    var awsRegion = configuration["AWS:Region"];
+    var awsAccessKey = configuration["AWS:AccessKey"];
+    var awsSecretKey = configuration["AWS:SecretKey"];
+
     var config = new AmazonS3Config
     {
         RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(awsRegion)
