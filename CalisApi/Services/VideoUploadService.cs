@@ -1,7 +1,9 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using CalisApi.Database.Interfaces;
 using CalisApi.Models;
 using CalisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CalisApi.Services
 {
@@ -9,14 +11,18 @@ namespace CalisApi.Services
     {
         private readonly IAmazonS3 _s3Client;
         private readonly IConfiguration _configuration;
+        private readonly IVideoRepository _videoRepository;
+
         private readonly string _bucketName = "calisapp-exercises";
         private readonly string _region;
 
-        public VideoUploadService(IAmazonS3 s3Client, IConfiguration configuration)
+        public VideoUploadService(IAmazonS3 s3Client, IConfiguration configuration, IVideoRepository videoRepository)
         {
             _s3Client = s3Client;
             _configuration = configuration;
             _region = _configuration["AWS:Region"] ?? "us-east-2";
+
+            _videoRepository = videoRepository;
         }
 
         public async Task<Video> UploadVideoAsync(IFormFile file, VideoRequest metadata)
@@ -54,6 +60,32 @@ namespace CalisApi.Services
             catch (AmazonS3Exception ex)
             {
                 throw new Exception($"Error de S3 al subir el video: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task DeleteVideoAsync(int videoId)
+        {
+            var video = await _videoRepository.GetVideoByIdAsync(videoId);
+            if (video == null) {
+                throw new ArgumentException("El archivo no existe.");
+            }
+            var s3Key = $"videos/{video.Url}";
+
+            try
+            {
+                var deleteRequest = new DeleteObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = s3Key
+                };
+
+                await _s3Client.DeleteObjectAsync(deleteRequest);
+
+             }
+            catch (AmazonS3Exception ex)
+            {
+                throw new Exception($"Error de S3 al eliminar el video: {ex.Message}");
             }
         }
 

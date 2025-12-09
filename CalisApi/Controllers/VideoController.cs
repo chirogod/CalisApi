@@ -2,6 +2,7 @@
 using CalisApi.Database.Interfaces;
 using CalisApi.Models;
 using CalisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace CalisApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VideoController : ControllerBase
     {
         private readonly IVideoRepository _videoRepository;
@@ -19,12 +21,14 @@ namespace CalisApi.Controllers
             _videoRepository = videoRepository;
             _videoUploadService = videoUploadService;
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetAllVideos()
+        public async Task<IActionResult> GetAllVideos(int? categoryId)
         {
-            var videos = await _videoRepository.GetAllVideosAsync();
+            var videos = await _videoRepository.GetAllVideosAsync(categoryId);
             return Ok(videos);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVideoById(int id)
@@ -38,6 +42,7 @@ namespace CalisApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm] VideoRequest videoRequest)
         {
             if (videoRequest.File == null || videoRequest.File.Length == 0)
@@ -63,6 +68,28 @@ namespace CalisApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var video = await _videoRepository.GetVideoByIdAsync(id);
+            if (video == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                await _videoUploadService.DeleteVideoAsync(id);
+                await _videoRepository.DeleteVideoAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error interno: {ex.Message}");
+
             }
         }
     }

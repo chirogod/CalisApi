@@ -10,9 +10,17 @@ namespace CalisApi.Database.Repositories
         public VideoRepository(DatabaseContext databaseContext) { 
             _context = databaseContext;
         }
-        public async Task<IEnumerable<Video>> GetAllVideosAsync()
+        public async Task<IEnumerable<Video>> GetAllVideosAsync(int? categoryId)
         {
-            return await _context.Videos.ToListAsync();
+            if (categoryId.HasValue)
+            {
+                return await _context.Videos.Where(v=>v.CategoryId==categoryId).ToListAsync();
+            }
+            else
+            {
+                return await _context.Videos.ToListAsync();
+            }
+                
         }
         public async Task<Video?> GetVideoByIdAsync(int id)
         {
@@ -23,6 +31,16 @@ namespace CalisApi.Database.Repositories
             await _context.Videos.AddAsync(video);
             await _context.SaveChangesAsync();
             return video;
+        }
+
+        public async Task DeleteVideoAsync(int id)
+        {
+            var video = await GetVideoByIdAsync(id);
+            if(video != null)
+            {
+                _context.Videos.Remove(video);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
