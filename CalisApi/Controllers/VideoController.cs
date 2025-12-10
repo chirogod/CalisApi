@@ -23,9 +23,9 @@ namespace CalisApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllVideos(int? categoryId)
+        public async Task<IActionResult> GetAllVideos(int? categoryId, string? searchTerm)
         {
-            var videos = await _videoRepository.GetAllVideosAsync(categoryId);
+            var videos = await _videoRepository.GetAllVideosAsync(categoryId, searchTerm);
             return Ok(videos);
         }
 

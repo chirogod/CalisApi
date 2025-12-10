@@ -1,5 +1,6 @@
 ﻿using CalisApi.Database.Interfaces;
 using CalisApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalisApi.Database.Repositories
 {
@@ -11,7 +12,12 @@ namespace CalisApi.Database.Repositories
         {
             _context = context;
         }
-        
+
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+
         public async Task<Category> AddCategoryAsync(Category category)
         {
             _context.Categories.Add(category);
