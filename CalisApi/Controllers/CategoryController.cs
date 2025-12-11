@@ -42,5 +42,47 @@ namespace CalisApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Category category)
+        {
+            var exist = await _categoryRepository.GetCategoryById(id);
+            if(exist == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                exist.Name = category.Name;
+                exist.Description = category.Description;
+                await _categoryRepository.UpdateCategoryAsync(exist);
+                return Ok(exist);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var exist = await _categoryRepository.GetCategoryById(id); 
+            if(exist == null)
+            {
+                return NotFound($"Categoria no encontrada");
+            }
+            try
+            {
+                await _categoryRepository.DeleteCategory(id);
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
