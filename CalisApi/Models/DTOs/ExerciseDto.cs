@@ -8,5 +8,6 @@
         public int Series { get; set; }
         public string Descanso { get; set; }
         public string Obs { get; set; }
+        public int? VideoId { get; set; }
     }
 }

@@ -6,5 +6,6 @@
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public int LimitedSpots { get; set; }
+        public List<int> AchievementIds { get; set; } = new();
     }
 }

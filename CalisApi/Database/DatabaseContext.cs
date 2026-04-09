@@ -20,5 +20,21 @@ namespace CalisApi.Database
         public DbSet<Rutine> Rutines { get; set; }
 
         public DbSet<RutineExercise> RutineExercises { get; set; }
+
+        public DbSet<Achievement> Achievements { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
+        public DbSet<SessionAchievement> SessionAchievements { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<RutineExercise>()
+                .HasOne(re => re.Video)
+                .WithMany()
+                .HasForeignKey(re => re.VideoId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
     }
+
 }
+

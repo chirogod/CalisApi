@@ -9,8 +9,10 @@
         public int Series { get; set; }
         public string Descanso { get; set; }
         public string Obs { get; set; }
-        
+        public int? VideoId { get; set; }
+        public Video Video { get; set; }
         public int RutineId { get; set; }
         public Rutine Rutine { get; set; }
+
     }
 }

@@ -24,7 +24,7 @@ namespace CalisApi.Controllers
         }
 
         [HttpPost("{sessionId}")]
-        [Authorize(Roles = "Usuario")]
+        [Authorize(Roles = "Clover")]
         public async Task<IActionResult> Enroll(int sessionId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -83,7 +83,7 @@ namespace CalisApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Usuario")]
+        [Authorize(Roles = "Clover")]
         public async Task<IActionResult> UnEnroll(int id)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

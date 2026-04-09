@@ -53,6 +53,8 @@ namespace CalisApi.Services
                 {
                     Title = metadata.Title,
                     Description = metadata.Description,
+                    Dificulty = metadata.Dificulty,
+                    Requisites = metadata.Requisites,
                     CategoryId = metadata.CategoryId,
                     Url = videoUrl
                 };

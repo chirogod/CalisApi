@@ -40,6 +40,7 @@ namespace CalisApi.Database.Repositories
             {
                 Title = rutine.Title,
                 Description = rutine.Description,
+                Duration = rutine.Duration,
                 CategoryId = rutine.CategoryId,
                 Exercises = rutine.Exercises
                     .OrderBy(e => e.Tipo == "Calentamiento" ? 0 : 1)
@@ -50,7 +51,8 @@ namespace CalisApi.Database.Repositories
                         Reps = e.Reps,
                         Series = e.Series,
                         Descanso = e.Descanso,
-                        Obs = e.Obs
+                        Obs = e.Obs,
+                        VideoId = e.VideoId
                     }).ToList()
             };
         }

@@ -1,14 +1,13 @@
-﻿namespace CalisApi.Models
+﻿namespace CalisApi.Models.DTOs
 {
-    public class Session
+    public class SessionResponseDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public int LimitedSpots { get; set; }
-        public int Enrolled { get; set; }   
-        public virtual ICollection<SessionAchievement> SessionAchievements { get; set; } = new List<SessionAchievement>();
-
+        public int Enrolled { get; set; }
+        public List<int> AchievementIds { get; set; }
     }
 }

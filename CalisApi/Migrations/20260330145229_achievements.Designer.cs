@@ -4,6 +4,7 @@ using CalisApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CalisApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260330145229_achievements")]
+    partial class achievements
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,7 +236,7 @@ namespace CalisApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CalisApi.Models.UserAchievement", b =>
+            modelBuilder.Entity("CalisApi.Models.UserAChievement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -244,11 +247,11 @@ namespace CalisApi.Migrations
                     b.Property<int>("AchievementId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateEarned")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("SessionId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -257,9 +260,7 @@ namespace CalisApi.Migrations
 
                     b.HasIndex("AchievementId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAchievements");
+                    b.ToTable("UserAChievements");
                 });
 
             modelBuilder.Entity("CalisApi.Models.UserSession", b =>
@@ -371,7 +372,7 @@ namespace CalisApi.Migrations
                     b.Navigation("Session");
                 });
 
-            modelBuilder.Entity("CalisApi.Models.UserAchievement", b =>
+            modelBuilder.Entity("CalisApi.Models.UserAChievement", b =>
                 {
                     b.HasOne("CalisApi.Models.Achievement", "Achievement")
                         .WithMany()
@@ -379,15 +380,7 @@ namespace CalisApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CalisApi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Achievement");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CalisApi.Models.UserSession", b =>

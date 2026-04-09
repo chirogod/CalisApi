@@ -7,7 +7,6 @@ namespace CalisApi.Database.Interfaces
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryById(int id);
         Task<Category> AddCategoryAsync(Category category);
-
         Task<Category> UpdateCategoryAsync(Category category);
         Task DeleteCategory(int id);
     }

@@ -16,18 +16,16 @@ namespace CalisApi.Database.Repositories
 
         public async Task<IEnumerable<Session>> GetAll()
         {
-            return await _context.Sessions.ToListAsync();
+            return await _context.Sessions.Include(s => s.SessionAchievements).ToListAsync();
         }
         public async Task<Session> GetSessionById(int id)
         {
-            var ses = await _context.Sessions.FindAsync(id);
-            if (ses == null) 
-            {
-                return null;
-            }
-            return ses;
+            return await _context.Sessions
+        .Include(s => s.SessionAchievements)
+        .FirstOrDefaultAsync(s => s.Id == id);
         }
         
+
 
         public async Task Create(Session session)
         {
@@ -37,9 +35,10 @@ namespace CalisApi.Database.Repositories
 
         public async Task<IEnumerable<Session>> GetAllSessionsByDate(DateTime date)
         {
-            return await _context.Sessions.Where(x => x.Date.Date == date.Date).ToListAsync();
-            
-
+            return await _context.Sessions
+                                .Include(s => s.SessionAchievements)
+                                .Where(x => x.Date.Date == date.Date)
+                                .ToListAsync();
         }
 
         public async Task<Session> GetSessionByDate(DateTime date)
@@ -63,6 +62,15 @@ namespace CalisApi.Database.Repositories
                             FullName = us.User.FullName
                         })
                         .ToListAsync();
+        }
+
+        public async Task<List<Achievement>> GetSessionAchievements(int sessionId)
+        {
+            return await _context.SessionAchievements
+                        .Where(sa => sa.SessionId == sessionId)
+                        .Include(sa => sa.Achievement)
+                        .Select(sa => sa.Achievement)
+                        .ToListAsync(); 
         }
 
     }

@@ -31,7 +31,6 @@ namespace CalisApi.Controllers
             return Ok(rutine);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateRutine([FromBody] RutineDto rutine)
         {
@@ -39,6 +38,7 @@ namespace CalisApi.Controllers
             {
                 Title = rutine.Title,
                 Description = rutine.Description,
+                Duration = rutine.Duration,
                 CategoryId = rutine.CategoryId,
                 Exercises = rutine.Exercises.Select(e => new RutineExercise
                 {
@@ -47,7 +47,8 @@ namespace CalisApi.Controllers
                     Reps = e.Reps,
                     Series = e.Series,
                     Descanso = e.Descanso,
-                    Obs = e.Obs
+                    Obs = e.Obs,
+                    VideoId = e.VideoId
                 }).ToList()
             };
 

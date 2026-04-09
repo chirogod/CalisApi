@@ -46,7 +46,7 @@ namespace CalisApi.Database.Repositories
         }
         public async Task<IEnumerable<User>> GetAllUsuarios()
         {
-            return await _context.Users.Where(p=>p.Role == "Usuario").ToListAsync();
+            return await _context.Users.Where(p=>p.Role != "Admin").ToListAsync();
         }
 
         public async Task Add(User user)
