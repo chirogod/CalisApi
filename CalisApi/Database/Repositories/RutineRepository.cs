@@ -22,6 +22,8 @@ namespace CalisApi.Database.Repositories
                     Id = r.Id,
                     Title = r.Title,
                     Description = r.Description,
+                    Dificulty = r.Dificulty,
+                    Duration = r.Duration,
                     CategoryName = r.Category.Name
                 })
                 .ToListAsync();
@@ -41,6 +43,7 @@ namespace CalisApi.Database.Repositories
                 Title = rutine.Title,
                 Description = rutine.Description,
                 Duration = rutine.Duration,
+                Dificulty = rutine.Dificulty,
                 CategoryId = rutine.CategoryId,
                 Exercises = rutine.Exercises
                     .OrderBy(e => e.Tipo == "Calentamiento" ? 0 : 1)

@@ -24,6 +24,8 @@ namespace CalisApi.Database
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<UserAchievement> UserAchievements { get; set; }
         public DbSet<SessionAchievement> SessionAchievements { get; set; }
+
+        public DbSet<Post> Posts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

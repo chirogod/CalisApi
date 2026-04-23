@@ -40,6 +40,7 @@ namespace CalisApi.Controllers
                 Description = rutine.Description,
                 Duration = rutine.Duration,
                 CategoryId = rutine.CategoryId,
+                Dificulty = rutine.Dificulty,
                 Exercises = rutine.Exercises.Select(e => new RutineExercise
                 {
                     Exercise = e.Exercise,
